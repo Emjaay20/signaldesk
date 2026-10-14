@@ -1,0 +1,1 @@
+// Placeholder worker that would process jobs\nconsole.log('Worker started');

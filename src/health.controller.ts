@@ -1,0 +1,1 @@
+import { Controller, Get } from '@nestjs/common';\n\n@Controller()\nexport class HealthController {\n  @Get('healthz')\n  health(): string {\n    return 'OK';\n  }\n\n  @Get('readyz')\n  ready(): string {\n    return 'READY';\n  }\n}

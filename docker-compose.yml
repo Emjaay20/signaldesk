@@ -1,0 +1,24 @@
+
+services:
+  app:
+    image: node:18-alpine
+    command: ["sh", "-c", "npm install --no-fund && npm start"]
+    volumes:
+      - /opt/aetherhost/deployments/signaldesk:/app
+    working_dir: /app
+    environment:
+      PORT: "80"
+    mem_limit: 512m
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=aetherhost-net"
+      - "traefik.http.routers.signaldesk-app.rule=Host(`signaldesk.aetherhost.com.ng`)"
+      - "traefik.http.routers.signaldesk-app.entrypoints=websecure"
+      - "traefik.http.routers.signaldesk-app.tls.certresolver=letsencrypt"
+      - "traefik.http.services.signaldesk-app.loadbalancer.server.port=80"
+    networks:
+      - aetherhost-net
+networks:
+  aetherhost-net:
+    external: true

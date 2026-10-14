@@ -1,0 +1,1 @@
+{\n  \"compilerOptions\": {\n    \"module\": \"commonjs\",\n    \"target\": \"es2022\",\n    \"strict\": true,\n    \"esModuleInterop\": true,\n    \"skipLibCheck\": true,\n    \"forceConsistentCasingInFileNames\": true\n  }\n}

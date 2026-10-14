@@ -1,0 +1,1 @@
+import { Controller, Get } from '@nestjs/common';\n\n@Controller()\nexport class AppController {\n  @Get()\n  getRoot(): string {\n    return 'Signaldesk API';\n  }\n}

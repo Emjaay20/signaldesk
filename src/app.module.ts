@@ -1,0 +1,1 @@
+import { Module } from '@nestjs/common';\nimport { AppController } from './app.controller';\nimport { HealthController } from './health.controller';\n\n@Module({\n  imports: [],\n  controllers: [AppController, HealthController],\n  providers: [],\n})\nexport class AppModule {}
