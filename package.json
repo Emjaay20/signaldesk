@@ -1,1 +1,20 @@
-{\n  \"name\": \"signaldesk\",\n  \"version\": \"0.1.0\",\n  \"main\": \"dist/main.js\",\n  \"scripts\": {\n    \"start:dev\": \"ts-node src/main.ts\",\n    \"worker\": \"ts-node src/worker.ts\"\n  },\n  \"dependencies\": {\n    \"@nestjs/common\": \"^10.0.0\",\n    \"@nestjs/core\": \"^10.0.0\",\n    \"reflect-metadata\": \"^0.1.13\",\n    \"rxjs\": \"^7.8.0\"\n  },\n  \"devDependencies\": {\n    \"ts-node\": \"^10.9.1\",\n    \"typescript\": \"^5.2.2\"\n  }\n}
+{
+  "name": "signaldesk",
+  "version": "0.1.0",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/main.js"
+  },
+  "dependencies": {
+    "@nestjs/common": "^10.0.0",
+    "@nestjs/core": "^10.0.0",
+    "@nestjs/serve-static": "^3.0.0",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.8.0"
+  },
+  "devDependencies": {
+    "ts-node": "^10",
+    "typescript": "^5"
+  }
+}

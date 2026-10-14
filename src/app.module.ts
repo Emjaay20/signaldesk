@@ -1,1 +1,16 @@
-import { Module } from '@nestjs/common';\nimport { AppController } from './app.controller';\nimport { HealthController } from './health.controller';\n\n@Module({\n  imports: [],\n  controllers: [AppController, HealthController],\n  providers: [],\n})\nexport class AppModule {}
+import { Module } from '@nestjs/common';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+import { AppController } from './app.controller';
+import { HealthController } from './health.controller';
+
+@Module({
+  imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
+    }),
+  ],
+  controllers: [AppController, HealthController],
+  providers: [],
+})
+export class AppModule {}

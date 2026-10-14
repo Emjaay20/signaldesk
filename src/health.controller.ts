@@ -1,1 +1,19 @@
-import { Controller, Get } from '@nestjs/common';\n\n@Controller()\nexport class HealthController {\n  @Get('healthz')\n  health(): string {\n    return 'OK';\n  }\n\n  @Get('readyz')\n  ready(): string {\n    return 'READY';\n  }\n}
+import { Controller, Get } from '@nestjs/common';
+
+@Controller()
+export class HealthController {
+  @Get('health')
+  health(): string {
+    return 'OK';
+  }
+
+  @Get('healthz')
+  healthz(): string {
+    return 'OK';
+  }
+
+  @Get('readyz')
+  ready(): string {
+    return 'READY';
+  }
+}

@@ -1,11 +1,7 @@
 
 services:
   app:
-    image: node:18-alpine
-    command: ["sh", "-c", "npm install --no-fund && npm start"]
-    volumes:
-      - /opt/aetherhost/deployments/signaldesk:/app
-    working_dir: /app
+    build: .
     environment:
       PORT: "80"
     mem_limit: 512m
