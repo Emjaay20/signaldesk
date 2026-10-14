@@ -1,1 +1,5 @@
-# ADR 001 – Hybrid Extract Path\n\n*Status*: Accepted\n\nWe adopt a hybrid approach for data extraction: the API validates and stores CSV metadata, while a background worker streams the CSV rows into the processing pipeline. This balances request latency and reliability, and enables idempotent ingest via a unique `ingest_id` header.\n
+# ADR 001 – Hybrid Extract Path
+
+*Status*: Accepted
+
+We adopt a hybrid approach for data extraction: the API validates and stores CSV metadata, while a background worker streams the CSV rows into the processing pipeline. This balances request latency and reliability, and enables idempotent ingest via a unique `ingest_id` header.
