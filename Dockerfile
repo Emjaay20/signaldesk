@@ -6,15 +6,12 @@ WORKDIR /app
 
 # Copy package definition and install dependencies
 COPY package.json ./
-RUN npm ci
+RUN npm install && npm run build
 
 # Copy source code and configuration
 COPY src ./src
 COPY public ./public
 COPY tsconfig.json ./
-
-# Build the application
-RUN npm run build
 
 # Expose the application port
 EXPOSE 80

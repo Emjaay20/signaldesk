@@ -1,1 +1,30 @@
-<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>Signaldesk</title>\n</head>\n<body>\n  <h1>Signaldesk Dashboard</h1>\n  <p>Welcome to Signaldesk.</p>\n</body>\n</html>
+<!DOCTYPE html>
+<html lang=\"en\">
+<head>
+  <meta charset=\"UTF-8\" />
+  <title>Signaldesk</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2rem; }
+    #status { font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>Signaldesk Dashboard</h1>
+  <p>Welcome to Signaldesk.</p>
+  <p>Health check: <span id=\"status\">Loading...</span></p>
+  <script>
+    fetch('/health')
+      .then(res => res.text())
+      .then(text => {
+        const el = document.getElementById('status');
+        el.textContent = text;
+        el.style.color = text === 'OK' ? 'green' : 'red';
+      })
+      .catch(err => {
+        const el = document.getElementById('status');
+        el.textContent = 'Error';
+        el.style.color = 'red';
+      });
+  </script>
+</body>
+</html>
