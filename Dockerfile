@@ -1,21 +1,25 @@
-# Use official Node LTS image
-FROM node:20-alpine
-
-# Set working directory
+FROM node:20-alpine AS deps
 WORKDIR /app
+RUN apk add --no-cache openssl
+COPY package.json package-lock.json ./
+RUN npm ci
 
-# Copy package definition and install dependencies
-COPY package.json ./
-RUN npm install
-
-# Copy source code and configuration
+FROM deps AS build
+COPY prisma ./prisma
 COPY src ./src
-COPY public ./public
-COPY tsconfig.json ./
-RUN npm run build
+COPY web ./web
+COPY vite.config.ts tsconfig.json ./
+COPY signaldesk-architecture.html ./
+RUN npx prisma generate && npm run build
 
-# Expose the application port
+FROM node:20-alpine AS runner
+WORKDIR /app
+RUN apk add --no-cache openssl
+ENV NODE_ENV=production
+COPY package.json package-lock.json ./
+COPY prisma ./prisma
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/public ./public
 EXPOSE 80
-
-# Start the application
-CMD ["npm", "run", "start"]
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main.js"]

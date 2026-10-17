@@ -1,0 +1,11 @@
+sku,name,price,stock,status
+ACME-100,Wireless Mouse,24.99,40,active
+ACME-101,USB-C Hub,19.00,0,active
+ACME-102,Laptop Sleeve,,12,active
+ACME-103,HDMI Cable,8.50,0,active
+ACME-104,Webcam 1080p,49.99,8,active
+ACME-105,Mechanical Keyboard,89.00,3,active
+ACME-106,Monitor Arm,,0,active
+ACME-107,Laptop Stand,32.00,15,active
+ACME-108,USB Dock,45.00,0,out_of_stock
+ACME-109,Cable Organizer,6.99,200,active

@@ -1,0 +1,4 @@
+sku,name,price,stock,status
+SKU-1,Widget,9.99,12,active
+SKU-2,Gadget,4.50,0,out_of_stock
+SKU-3,Adapter,2.00,40,active

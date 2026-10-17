@@ -1,0 +1,135 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Workspace {
+  id        String    @id @default(uuid())
+  name      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  apiKeys   ApiKey[]
+  ingests     Ingest[]
+  products    Product[]
+  cases       HealthCase[]
+  webhook     WebhookEndpoint?
+  deliveries  WebhookDelivery[]
+
+  @@index([createdAt])
+}
+
+model ApiKey {
+  id          String    @id @default(uuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  name        String    @default("default")
+  keyPrefix   String
+  keyHash     String    @unique
+  createdAt   DateTime  @default(now())
+  lastUsedAt  DateTime?
+  revokedAt   DateTime?
+
+  @@index([workspaceId])
+}
+
+model Ingest {
+  id          String    @id @default(uuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  ingestKey   String
+  status      String    @default("pending")
+  filename    String?
+  byteSize    Int
+  csvBytes    Bytes
+  rowCount    Int?
+  error       String?
+  attempts    Int       @default(0)
+  lockedAt    DateTime?
+  lockedBy    String?
+  durationMs  Int?
+  createdAt   DateTime  @default(now())
+  completedAt DateTime?
+
+  @@unique([workspaceId, ingestKey])
+  @@index([status, lockedAt])
+  @@index([workspaceId, createdAt])
+}
+
+model Product {
+  id            String       @id @default(uuid())
+  workspaceId   String
+  workspace     Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  sku           String
+  name          String
+  price         Float?
+  stock         Int?
+  status        String?
+  healthScore   Int          @default(100)
+  healthReasons String[]     @default([])
+  healthy       Boolean      @default(true)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  cases         HealthCase[]
+
+  @@unique([workspaceId, sku])
+  @@index([workspaceId, healthy])
+}
+
+model HealthCase {
+  id          String    @id @default(uuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  productId   String
+  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sku         String
+  status      String
+  reasons     String[]
+  resolution  String?
+  openedAt    DateTime  @default(now())
+  closedAt    DateTime?
+  updatedAt   DateTime  @updatedAt
+
+  @@index([workspaceId, status])
+  @@index([productId, status])
+  @@map("cases")
+}
+
+model WebhookEndpoint {
+  id          String            @id @default(uuid())
+  workspaceId String            @unique
+  workspace   Workspace         @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  url         String
+  secret      String
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  deliveries  WebhookDelivery[]
+}
+
+model WebhookDelivery {
+  id             String           @id @default(uuid())
+  workspaceId    String
+  workspace      Workspace        @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  endpointId     String?
+  endpoint       WebhookEndpoint? @relation(fields: [endpointId], references: [id], onDelete: SetNull)
+  eventType      String
+  targetUrl      String
+  payload        String
+  signature      String
+  status         String           @default("pending")
+  attempts       Int              @default(0)
+  maxAttempts    Int              @default(5)
+  lastStatusCode Int?
+  lastError      String?
+  durationMs     Int?
+  nextAttemptAt  DateTime         @default(now())
+  deliveredAt    DateTime?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  @@index([workspaceId, createdAt])
+  @@index([status, nextAttemptAt])
+}

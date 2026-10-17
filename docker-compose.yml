@@ -1,9 +1,31 @@
-
 services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: signaldesk
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-signaldesk}
+      POSTGRES_DB: signaldesk
+    volumes:
+      - signaldesk_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U signaldesk -d signaldesk"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+    networks:
+      - aetherhost-net
+
   app:
     build: .
     environment:
       PORT: "80"
+      SANDBOX_SINK_BASE_URL: "http://app:80"
+      DATABASE_URL: postgresql://signaldesk:${POSTGRES_PASSWORD:-signaldesk}@postgres:5432/signaldesk?schema=public
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-change-me}
+    depends_on:
+      postgres:
+        condition: service_healthy
     mem_limit: 512m
     restart: unless-stopped
     labels:
@@ -15,6 +37,23 @@ services:
       - "traefik.http.services.signaldesk-app.loadbalancer.server.port=80"
     networks:
       - aetherhost-net
+
+  worker:
+    build: .
+    command: ["npm", "run", "start:worker"]
+    environment:
+      DATABASE_URL: postgresql://signaldesk:${POSTGRES_PASSWORD:-signaldesk}@postgres:5432/signaldesk?schema=public
+    depends_on:
+      postgres:
+        condition: service_healthy
+    mem_limit: 256m
+    restart: unless-stopped
+    networks:
+      - aetherhost-net
+
 networks:
   aetherhost-net:
     external: true
+
+volumes:
+  signaldesk_pgdata:
